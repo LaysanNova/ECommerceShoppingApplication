@@ -58,8 +58,9 @@ public class TMobileSelenium {
         }
 
         for (String subFilter : subFilters) {
-            WebElement filterDisplayName = driver.findElement(
-                    By.xpath("//div[@role='group']//span[contains(text(),'" + subFilter + "')]"));
+
+            WebElement filterDisplayName = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//div[@role='group']//span[contains(text(),'" + subFilter + "')]")));
 
             clickCheckBox(filterDisplayName);
         }
