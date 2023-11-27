@@ -1,12 +1,9 @@
 import com.microsoft.playwright.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 public class TMobilePlaywright {
 
     static Page page;
-    static Playwright playwright;
+    static String GROUP_NAME = "desktop-filter-group-name";
+
 
     public static void main(String[] args) {
 
@@ -23,32 +20,25 @@ public class TMobilePlaywright {
 
 //          selectFilter("Brands", "TCL");
 //          selectFilter("Deals", "New", "Special offer");
-//          selectFilter("Operating System", "iPadOS", "Android");
-            selectFilter("Brands", "All");
+          selectFilter("Operating System", "iPadOS", "Android");
+//            selectFilter("Brands", "All");
         }
 
     }
 
     private static void selectFilter(String filter, String... subFilters) {
 
-        playwright.selectors().setTestIdAttribute("data-testid");
+        page.getByTestId(GROUP_NAME).filter(new Locator.FilterOptions().setHasText(filter)).click();
 
-        page.getByTestId("desktop-filter-group-name").filter(new Locator.FilterOptions().setHasText(filter)).click();
-
-//        WebElement filterElement = wait.until(ExpectedConditions.elementToBeClickable(
-//                By.xpath("//legend[contains(text(), '" + filter + "')]")));
-//
-//        clickCheckBox(filterElement);
-//
-//        if (subFilters[0].equals("All")) {
-//            subFilters = getSubFilters().toArray(new String[0]);
-//        }
-//
-//        for (String subFilter : subFilters) {
-//            WebElement filterDisplayName = driver.findElement(
-//                    By.xpath("//div[@role='group']//span[contains(text(),'" + subFilter + "')]"));
-//
-//            clickCheckBox(filterDisplayName);
-//        }
+        if (subFilters[0].equals("All")) {
+            page.locator(".filter-display-name").all().forEach(Locator::check);
+        } else {
+            for (String subFilter : subFilters) {
+                page.locator(".filter-display-name").getByText(subFilter).check();
+            }
+        }
     }
 }
+
+
+//PWDEBUG=1
