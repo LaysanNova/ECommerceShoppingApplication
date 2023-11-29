@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TMobileSelenium {
@@ -16,7 +15,6 @@ public class TMobileSelenium {
     static WebDriver driver;
     private static WebDriverWait wait;
     private final static String ALL_SUB_FILTERS = "//div[@role='group']//span[@class='filter-display-name']";
-
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -26,43 +24,35 @@ public class TMobileSelenium {
         driver.get("https://www.t-mobile.com/tablets");
         Thread.sleep(5000);
 
-//       selectFilter("Brands", "Apple", "Samsung", "TCL");
-
+       selectFilter("Brands", "Apple", "Samsung", "TCL");
+//
 //        selectFilter("Brands", "TCL");
-//        selectFilter("Deals", "New", "Special offer");
-//        selectFilter("Operating System", "iPadOS", "Android");
-        selectFilter("Brands", "All");
-    }
-
-    static void clickCheckBox(WebElement element) {
-        Actions actions = new Actions(driver);
-        actions.moveToElement(element).click().perform();
-    }
-
-    static List<String> getSubFilters() {
-
-        return driver.findElements(
-                            By.xpath(ALL_SUB_FILTERS))
-                    .stream().map(WebElement::getText).toList();
+        selectFilter("Deals", "New", "Special offer");
+        selectFilter("Operating System", "iPadOS", "Android");
+//        selectFilter("Brands", "All");
     }
 
     private static void selectFilter(String filter, String... subFilters) {
 
         WebElement filterElement = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//legend[contains(text(), '" + filter + "')]")));
+                By.xpath("//legend[normalize-space() = '" + filter + "']")));
 
-        clickCheckBox(filterElement);
+        filterElement.click();
 
-        if (subFilters[0].equals("All")) {
-            subFilters = getSubFilters().toArray(new String[0]);
-        }
+        List<WebElement> actualSubFilters = driver.findElements(
+                By.xpath(ALL_SUB_FILTERS));
 
-        for (String subFilter : subFilters) {
+        if (subFilters.length == 1 && subFilters[0].equals("All")) {
+            for (WebElement element : actualSubFilters) {
+               element.click();
+            }
+        } else if (subFilters.length > 0 && !Arrays.toString(subFilters).contains("All"))  {
 
-            WebElement filterDisplayName = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//div[@role='group']//span[contains(text(),'" + subFilter + "')]")));
-
-            clickCheckBox(filterDisplayName);
+            for (String subFilter : subFilters) {
+                WebElement filterDisplayName = wait.until(ExpectedConditions.elementToBeClickable(
+                        By.xpath("//span[@class='filter-display-name'][normalize-space() = '" + subFilter + "']")));
+                filterDisplayName.click();
+            }
         }
     }
 }

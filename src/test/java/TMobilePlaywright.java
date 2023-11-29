@@ -9,18 +9,19 @@ public class TMobilePlaywright {
 
         try (Playwright playwright = Playwright.create()) {
             Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
-                    .setHeadless(false).setSlowMo(1000));
+                    .setHeadless(false).setSlowMo(5000));
 
             BrowserContext context = browser.newContext();
             page = context.newPage();
 
             page.navigate("https://www.t-mobile.com/tablets");
 
-//          selectFilter("Brands", "Apple", "Samsung", "TCL");
+ //         selectFilter("Brands", "Apple", "Samsung", "TCL");
 
 //          selectFilter("Brands", "TCL");
 //          selectFilter("Deals", "New", "Special offer");
-          selectFilter("Operating System", "iPadOS", "Android");
+//          selectFilter("Operating System", "iPadOS", "Android");
+          selectFilter("Operating System", "All");
 //            selectFilter("Brands", "All");
         }
 
